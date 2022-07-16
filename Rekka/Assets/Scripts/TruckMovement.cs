@@ -16,16 +16,17 @@ public class TruckMovement : MonoBehaviour
     //public GameObject moveTowards;
     //public Vector2 optimalMovingVector;
 
-    private float move;
+    public float move;
     public float speed;
     private float rotation;
     public float rotationSpeed;
+    public float acceleration;
 
-    private float maxSpeed = 0.04f;
+    public float maxSpeed;
+    public float stallForce;
 
     [SerializeField]
     private float currentSpeedByFrame;
-
 
     private Vector3 lastPos;
     public Vector3 temp;
@@ -41,30 +42,42 @@ public class TruckMovement : MonoBehaviour
     void FixedUpdate()
     {
 
-        
-        temp = lastPos - transform.position;
+        temp = (lastPos - transform.position);
         lastPos = transform.position;
         currentSpeedByFrame = Mathf.Sqrt(Mathf.Pow(temp.x, 2) + Mathf.Pow(temp.y, 2) + Mathf.Pow(temp.z, 2));
         
-
-        move = Input.GetAxis("Vertical") * speed * (currentSpeedByFrame + 1f) * Time.deltaTime;
-
-        if (Input.GetAxis("Vertical") < 0)
+        if (Input.GetAxis("Vertical") > 0 && currentSpeedByFrame < maxSpeed)
         {
-            rotation = Input.GetAxis("Horizontal") * rotationSpeed;
+            move = currentSpeedByFrame + acceleration * Time.deltaTime;
         }
-        else
+        //if (Input.GetAxis("Vertical") < 0 && currentSpeedByFrame < maxSpeed)
+        //{
+        //    move = -currentSpeedByFrame + -acceleration * Time.deltaTime;
+        //}
+
+
+        // When car is going backwards, reverse turning controls
+        //if (Input.GetAxis("Vertical") < 0)
+        //{
+        //    rotation = Input.GetAxis("Horizontal") * rotationSpeed;
+        //}
+        //else
+        //{
+        //    rotation = Input.GetAxis("Horizontal") * -rotationSpeed;
+        //}
+        rotation = Input.GetAxis("Horizontal") * -rotationSpeed;
+
+
+        if (Input.GetAxis("Vertical") == 0 && currentSpeedByFrame > 0.001f)
         {
-            rotation = Input.GetAxis("Horizontal") * -rotationSpeed;
+            move = currentSpeedByFrame - stallForce * Time.deltaTime;
         }
+
         
+        if(move > 0.0005f)
+            transform.Translate(0, move, 0);
 
-        if (Input.GetAxis("Vertical") == 0)
-        {
-            move = speed * currentSpeedByFrame * 10 * Time.deltaTime;
-        }
 
-        transform.Translate(0, move, 0);
         if (currentSpeedByFrame > 0.01f)
         {
             if (currentSpeedByFrame < 0.025f)
