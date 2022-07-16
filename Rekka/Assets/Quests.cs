@@ -15,7 +15,7 @@ public class Quests : MonoBehaviour
     public bool timerRunning = false;
 
     public string questStatus = "inactive";
-
+    public AudioSource clickSound;
     public ParticleSystem takeEffect;
     // Start is called before the first frame update
     void Start()
@@ -50,10 +50,12 @@ public class Quests : MonoBehaviour
                 delivering = true;
                 timer = timerTime;
                 takeEffect.Play();
+                clickSound.Play();
             }
             if(collision.gameObject.name == deliverTo && delivering == true)
             {
                 takeEffect.Play();
+                clickSound.Play();
                 CompleteQuest();   
             }
         }
