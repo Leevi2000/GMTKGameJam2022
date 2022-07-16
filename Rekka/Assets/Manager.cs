@@ -21,9 +21,33 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        CheckQuestStatus();
+    }
+
+    private void CheckQuestStatus()
+    {
+        if(playerQuest.questStatus == "inactive")
+        {
+            Invoke("StartQuest", 3);
+        }
+        else if(playerQuest.questStatus == "failed")
+        {
+            score = score - 100;
+            Invoke("StartQuest", 3);
+        }
+        else if(playerQuest.questStatus == "completed")
+        {
+            score = score + 100;
+            Invoke("StartQuest", 3);
+            
+        }
+    }
+
+    public void StartQuest()
+    {
         int num1;
         int num2;
-        while(true)
+        while (true)
         {
             num1 = Random.Range(1, 6);
             num2 = Random.Range(1, 6);
@@ -33,11 +57,10 @@ public class Manager : MonoBehaviour
                 break;
             }
         }
-      
 
-        if (playerQuest.takeFrom == "")
-        {
-            playerQuest.StartQuest($"Factory_{num1}", $"Factory_{num2}");
-        }
+
+
+        playerQuest.StartQuest($"Factory_{num1}", $"Factory_{num2}");
+       
     }
 }

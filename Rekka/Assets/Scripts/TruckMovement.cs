@@ -26,8 +26,8 @@ public class TruckMovement : MonoBehaviour
     public float maxSpeed;
     public float stallForce;
 
-    [SerializeField]
-    private float currentSpeedByFrame;
+   
+    public float currentSpeedByFrame;
 
     private Vector3 lastPos;
     public Vector3 temp;
@@ -38,7 +38,7 @@ public class TruckMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gearList = new int[] { 0, 1, 2 };
+        gearList = new int[] { 0, 1, 2, 3 };
         currentGear = 1;
         rb = gameObject.GetComponent<Rigidbody2D>();
         lastPos = transform.position;
@@ -47,7 +47,7 @@ public class TruckMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        ChangeGears();
+        
 
         if (currentGear == 0)
         {
@@ -61,6 +61,10 @@ public class TruckMovement : MonoBehaviour
         {
             maxSpeed = 0.04f;
         }
+        else if (currentGear == 3)
+        {
+            maxSpeed = 0.065f;
+        }
 
         temp = (lastPos - transform.position);
         lastPos = transform.position;
@@ -71,11 +75,11 @@ public class TruckMovement : MonoBehaviour
             
             if (currentGear == 0)
                 {
-                move = (-1) * (currentSpeedByFrame + (acceleration * Time.deltaTime));
+                move = (-1) * (currentSpeedByFrame + (acceleration * Time.fixedDeltaTime));
             }
             else
             {
-                move = currentSpeedByFrame + (acceleration * Time.deltaTime);
+                move = currentSpeedByFrame + (acceleration * Time.fixedDeltaTime);
             }
             
             
@@ -88,11 +92,11 @@ public class TruckMovement : MonoBehaviour
         {
             if (currentGear > 0)
             {
-                move = currentSpeedByFrame - stallForce * Time.deltaTime;
+                move = currentSpeedByFrame - stallForce * Time.fixedDeltaTime;
             }
             else if (currentGear == 0)
             {
-                move = (-1) * (currentSpeedByFrame - stallForce * Time.deltaTime);
+                move = (-1) * (currentSpeedByFrame - stallForce * Time.fixedDeltaTime);
             }
             
         }
@@ -135,7 +139,7 @@ public class TruckMovement : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if(currentGear >= 1 && currentGear < 2)
+            if(currentGear >= 1 && currentGear < 3)
             {
                 currentGear = gearList[currentGear + 1];
             }
@@ -145,9 +149,9 @@ public class TruckMovement : MonoBehaviour
             }
         }
     }
-    private void LateUpdate()
+    private void Update()
     {
-   
-        
+        ChangeGears();
+
     }
 }

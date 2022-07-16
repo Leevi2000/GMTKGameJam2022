@@ -14,6 +14,8 @@ public class Quests : MonoBehaviour
     public float timer;
     public bool timerRunning = false;
 
+    public string questStatus = "inactive";
+
     public ParticleSystem takeEffect;
     // Start is called before the first frame update
     void Start()
@@ -63,13 +65,23 @@ public class Quests : MonoBehaviour
         deliverTo = destination;
         timer = timerTime;
         timerRunning = true;
+        questStatus = "active";
     }
 
     private void CompleteQuest(bool failure = false)
     {
         timerRunning = false;
-        takeFrom = null;
-        deliverTo = null;
+        takeFrom = "";
+        deliverTo = "";
         delivering = false;
+
+        if(failure)
+        {
+            questStatus = "failed";
+        }
+        else
+        {
+            questStatus = "completed";
+        }
     }
 }
