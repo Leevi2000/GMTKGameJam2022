@@ -22,6 +22,7 @@ public class TruckMovement : MonoBehaviour
     public float rotationSpeed;
     public float acceleration;
 
+
     public float maxSpeed;
     public float stallForce;
 
@@ -31,9 +32,14 @@ public class TruckMovement : MonoBehaviour
     private Vector3 lastPos;
     public Vector3 temp;
 
+    private int[] gearList;
+    public int currentGear;
+
     // Start is called before the first frame update
     void Start()
     {
+        gearList = new int[] { 0, 1, 2 };
+        currentGear = 1;
         rb = gameObject.GetComponent<Rigidbody2D>();
         lastPos = transform.position;
     }
@@ -41,6 +47,20 @@ public class TruckMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        ChangeGears();
+
+        if (currentGear == 0)
+        {
+            maxSpeed = 0.01f;
+        }
+        else if (currentGear == 1)
+        {
+            maxSpeed = 0.025f;
+        }
+        else if (currentGear == 2)
+        {
+            maxSpeed = 0.04f;
+        }
 
         temp = (lastPos - transform.position);
         lastPos = transform.position;
@@ -48,33 +68,37 @@ public class TruckMovement : MonoBehaviour
         
         if (Input.GetAxis("Vertical") > 0 && currentSpeedByFrame < maxSpeed)
         {
-            move = currentSpeedByFrame + acceleration * Time.deltaTime;
+            
+            if (currentGear == 0)
+                {
+                move = (-1) * (currentSpeedByFrame + (acceleration * Time.deltaTime));
+            }
+            else
+            {
+                move = currentSpeedByFrame + (acceleration * Time.deltaTime);
+            }
+            
+            
         }
-        //if (Input.GetAxis("Vertical") < 0 && currentSpeedByFrame < maxSpeed)
-        //{
-        //    move = -currentSpeedByFrame + -acceleration * Time.deltaTime;
-        //}
 
-
-        // When car is going backwards, reverse turning controls
-        //if (Input.GetAxis("Vertical") < 0)
-        //{
-        //    rotation = Input.GetAxis("Horizontal") * rotationSpeed;
-        //}
-        //else
-        //{
-        //    rotation = Input.GetAxis("Horizontal") * -rotationSpeed;
-        //}
         rotation = Input.GetAxis("Horizontal") * -rotationSpeed;
 
 
-        if (Input.GetAxis("Vertical") == 0 && currentSpeedByFrame > 0.001f)
+        if (Input.GetAxis("Vertical") == 0 && currentSpeedByFrame > 0.001f || currentSpeedByFrame > maxSpeed)
         {
-            move = currentSpeedByFrame - stallForce * Time.deltaTime;
+            if (currentGear > 0)
+            {
+                move = currentSpeedByFrame - stallForce * Time.deltaTime;
+            }
+            else if (currentGear == 0)
+            {
+                move = (-1) * (currentSpeedByFrame - stallForce * Time.deltaTime);
+            }
+            
         }
 
         
-        if(move > 0.0005f)
+        if(move > 0.0005f || move < 0.0005f)
             transform.Translate(0, move, 0);
 
 
@@ -92,6 +116,34 @@ public class TruckMovement : MonoBehaviour
         }
         
         
+    }
+
+    private void ChangeGears()
+    {
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            if(currentGear > 1)
+            {
+                currentGear = gearList[currentGear - 1];
+            }
+            else if(currentGear > 0 && currentSpeedByFrame < 0.001f)
+            {
+                currentGear = gearList[currentGear - 1];
+
+            }
+            
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if(currentGear >= 1 && currentGear < 2)
+            {
+                currentGear = gearList[currentGear + 1];
+            }
+            else if(currentGear == 0 && currentSpeedByFrame < 0.001f)
+            {
+                currentGear = gearList[currentGear + 1];
+            }
+        }
     }
     private void LateUpdate()
     {
