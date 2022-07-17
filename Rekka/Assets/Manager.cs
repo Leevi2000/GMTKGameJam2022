@@ -9,7 +9,9 @@ public class Manager : MonoBehaviour
 
     public GameObject player;
     private Quests playerQuest;
+    public GameObject arrow;
 
+    private bool searchingForQuest = false;
 
 
     // Start is called before the first frame update
@@ -29,17 +31,28 @@ public class Manager : MonoBehaviour
         if(playerQuest.questStatus == "inactive")
         {
             Invoke("StartQuest", 3);
+            searchingForQuest = true;
         }
         else if(playerQuest.questStatus == "failed")
         {
             score = score - 100;
             Invoke("StartQuest", 3);
+            searchingForQuest = true;
         }
         else if(playerQuest.questStatus == "completed")
         {
             score = score + 100;
             Invoke("StartQuest", 3);
-            
+            searchingForQuest = true;
+        }
+
+        if(playerQuest.questStatus == "active")
+        {
+            arrow.SetActive(true);
+        }
+        else
+        {
+            arrow.SetActive(false);
         }
     }
 
@@ -59,8 +72,9 @@ public class Manager : MonoBehaviour
         }
 
 
-
-        playerQuest.StartQuest($"Factory_{num1}", $"Factory_{num2}");
+        searchingForQuest = false;
+        if(playerQuest.questStatus != "active")
+            playerQuest.StartQuest($"Factory_{num1}", $"Factory_{num2}");
        
     }
 }
