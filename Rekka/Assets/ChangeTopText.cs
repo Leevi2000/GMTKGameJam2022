@@ -18,6 +18,12 @@ public class ChangeTopText : MonoBehaviour
     public Sprite[] dices;
     public GameObject imageObject;
     private Image img;
+
+    public GameObject scoreText;
+    private TMP_Text tmProScore;
+
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +31,9 @@ public class ChangeTopText : MonoBehaviour
         tmProAbove = mainText.GetComponent<TMP_Text>();
         tmProBelow = timerText.GetComponent<TMP_Text>();
         img = imageObject.GetComponent<Image>();
+        tmProScore = scoreText.GetComponent<TMP_Text>();
         img.enabled = false;
+
     }
 
 
@@ -70,6 +78,8 @@ public class ChangeTopText : MonoBehaviour
             tmProBelow.text = "Rolling a route...";
 
         }
+
+        tmProScore.text = $"Deliveries made: {quest.score}";
     }
 
     private Sprite GetDiceSprite(int diceNumber)

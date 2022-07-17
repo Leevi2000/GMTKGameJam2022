@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Quests : MonoBehaviour
 {
+    public int score = 0;
 
     public string takeFrom;
     public string deliverTo;
@@ -88,6 +89,7 @@ public class Quests : MonoBehaviour
         else
         {
             questStatus = "completed";
+            score = score + 1;
         }
     }
 }

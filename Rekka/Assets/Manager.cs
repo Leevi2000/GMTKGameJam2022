@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Manager : MonoBehaviour
 {
-    public int score;
+
 
     public GameObject player;
     private Quests playerQuest;
@@ -35,15 +35,16 @@ public class Manager : MonoBehaviour
         }
         else if(playerQuest.questStatus == "failed")
         {
-            score = score - 100;
+            
             Invoke("StartQuest", 3);
             searchingForQuest = true;
         }
         else if(playerQuest.questStatus == "completed")
         {
-            score = score + 100;
+
             Invoke("StartQuest", 3);
             searchingForQuest = true;
+            
         }
 
         if(playerQuest.questStatus == "active")
